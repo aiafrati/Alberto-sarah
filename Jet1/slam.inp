@@ -1,0 +1,29 @@
+0               -- iwig   = 0 (2d o axxisimm), 1 (wigley) 2(2d+t) 
+1,8             -- i2d,kg = 1 (2d), 0(axisymm) ; kg = pti gauss se 12d=0
+0               -- kini   = 1 start da sol prec(DISABLED), 0 start da 0.
+5.d0, 0.4d0     -- alpha,ztr = ang. trim , immersione transom in assetto
+1.d0,1.d0       -- vfall0,ux = velocita' di caduta, vel. di avanzamento
+2.1706d-3,  0.02d0 -- pro0, dx0 = immersione o dx iniziale
+0.0125d0        -- ampp    = ampiezza pannelli in prossimita' dell'impatto
+50.d0            -- pfraz   = rapporto ampp e ampiezza limite inferiore
+6.d0            -- ancut   = angolo minimo taglio jet in gradi
+201             -- ng      = n. pti ricostruiti sul corpo
+0.25            -- frdt    = "cfl" massimo
+1.050d0         -- escr    = coefficiente dilatazione pannelli
+20.d0           -- estr    = estensione a monte del dominio a destra
+-1              -- tsta    = salto temporale tra due stampe
+20               -- ksta    = salto passi tra due stampe (da dare se tsta<0)
+cd              -- scon    = estensione files configurazioni (2 lettere)
+vd              -- svel    = estensione files velocita' (2 lettere)
+pd              -- sprt    = estensione files pressione (2 lettere)
+ad              -- sadi    = estensione files config. adimensionali (2 lettere)
+ax              -- sad2    = estensione files config. adimensionali (2 lettere)
+dd              -- spot    = estensione files potenziale (2 lettere)
+foved           -- sfor    = estensione file forze velocita (5 lettere)
+0               -- lrest   = opzione restart (Si=1)
+1.d+15          -- rmu     = coefficiente adimensionale di massa
+0               -- kitm    = numero massimo it. per pressione (0=esplicito)
+3               -- ift     = intervallo azione filtro 
+3               -- iford   = ordine filtro di Dold
+1.d0            -- rga     = rapporto (m sopra/m sotto)
+1.d+15          -- vea     = velocita elastica adimensionale (rho*v0**2/rkk)

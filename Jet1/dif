@@ -1,0 +1,218 @@
+2c2,3
+<       subroutine geopla(x0,dzm,alpha,yg,zg,rnxg,ng)
+---
+>       subroutine geopla(x0,dzm,alpha,yg,zg,rnxg,
+>      #                 rnyg,rnzg,ng)
+4,12c5,12
+< *      implicit double precision (a-h,o-z)
+< *      parameter (nmax=1000,nsecm=20,kmax=nsecm)
+<       include "slam_p.h"
+<       parameter(nsecm=20,kmax=nsecm)
+<       dimension yg(npamx),zg(npamx),rnxg(npamx)
+<       dimension x(npamx),z(npamx),xi(npamx),ze(npamx)
+<       dimension xb(npamx),zb(npamx),xib(npamx),zeb(npamx)
+<       dimension xi1(nsecm,npamx),et1(nsecm,npamx),ze1(nsecm,npamx)
+<       dimension t1(nsecm,npamx)
+---
+>       implicit double precision (a-h,o-z)
+>       parameter (nmax=1000,nsecm=20,kmax=nsecm)
+>       dimension yg(nmax),zg(nmax),rnxg(nmax)
+>       dimension rnyg(nmax),rnzg(nmax)
+>       dimension x(nmax),z(nmax),xi(nmax),ze(nmax)
+>       dimension xb(nmax),zb(nmax),xib(nmax),zeb(nmax)
+>       dimension xi1(nsecm,nmax),et1(nsecm,nmax),ze1(nsecm,nmax)
+>       dimension t1(nsecm,nmax)
+14d13
+<       write(*,*) '.......... :  geopla' 
+15a15
+>       eps = 5.d-6
+20c20
+<       open(unit=7, file='geo.in')
+---
+>       rewind(7)
+22d21
+< *      write(36,*) nsec
+25d23
+< *        write(36,*) np 
+27d24
+< *        write(36,*) xi(i),ynull,ze(i),i
+45d41
+< *        write(36,*) xib(i),ynull,zeb(i),i
+51a48,81
+> * -- DIAGNOSTICA --
+>       write(*,*) 'isec, isecb, nsec ',isec,isecb,nsec
+>       if(isecb.gt.isec)then
+>         isecb = isec
+>         write(*,*)  'geopla   : OKKIO, isecb > isec '
+>         write(*,*)  '           provo con isecb = isec'
+>       endif
+>       if(isec.eq.1)then
+>         dx = abs(x(1)-x0)
+>         if(dx.le.eps)then
+>           x0   = x(1) + 0.5d0*eps
+>           isec = 2
+>           isecb= 2
+>           write(*,*) 'geopla   : OKKIO, x0 < x(1)!'
+>           write(*,*) '           di poco, lo sposto dentro'
+>         else
+>           write(*,*) 'geopla   : ALT, x0 < x(1) !!!!'
+>           STOP
+>         endif
+>       endif
+>       if(isec.gt.nsec)then
+>         dx = abs(x(nsec)-x0)
+>         if(dx.le.eps)then
+>           x0   = x(nsec) - 0.5d0*eps
+>           isec = nsec
+>           if(isecb.gt.nsec) isecb = nsec
+>           write(*,*) 'geopla   : OKKIO, x0 > x(nsec)!'
+>           write(*,*) '           di poco, lo sposto dentro'
+>         else
+>           write(*,*) 'geopla   : ALT, x0 > x(nsec) !!!!'
+>           STOP
+>         endif
+>       endif
+> *       
+63c93
+< *      write(36,*) xi1(i,1),et1(i,1),ze1(i,1)
+---
+> *      write(*,*) xi1(i,1),et1(i,1),ze1(i,1)
+67c97
+< *           write(36,*) xi1(i,j),et1(i,j),ze1(i,j)   
+---
+> *           write(*,*) xi1(i,j),et1(i,j),ze1(i,j)   
+83,86c113,114
+< *      write(36,*)
+< *      write(36,*) 'x0 z0 ',x0,z0
+<       xi0  = x0*ca - (z0-dzm)*sa
+<       ze0  = x0*sa + (z0-dzm)*ca
+---
+>       xi0  = x0*ca - z0*sa
+>       zd0  = x0*sa + z0*ca
+97d124
+< *      write(36,*) 'ng kmax ',ng,kmax 
+108c135
+< *        write(36,*) j1,t1(ii,j1),ts1
+---
+> *        write(*,*) j1,t1(ii,j1),ts1
+140,142c167,168
+< *        write(36,*) xin,zin,s
+<         if(s.lt.0.d0)then
+< *          write(36,*) 'prendo sezione prima, s=',s
+---
+>         if(s.lt.0.d0.and.ii.gt.2)then
+>           write(*,*) 'prendo sezione prima, s=',s
+146c172
+< *          write(36,*) 'sezione OK, s=',s
+---
+> *          write(*,*) 'sezione OK, s=',s
+156d181
+< *        write(36,*) yg(j),zg(j),j
+171c196
+< * -- normale come media tra calcolo con tau e taun.
+---
+> * -- A: normale come media tra calcolo con tauo e taun.
+176,206c201,239
+<         rnxg(j-1) = rnx/rn
+< * --- altro modo: media tra wxs e wxso, e assegno rn al centroide 
+< *        wxsm = 0.5d0*(wxso+wxs)
+< *        wysm = 0.5d0*(wyso+wys)
+< *        wzsm = 0.5d0*(wzso+wzs)
+< *        rnx = tauyn*wzsm - tauzn*wysm
+< *        rny = tauzn*wxsm - tauxn*wzsm 
+< *        rnz = tauxn*wysm - tauyn*wxsm
+< *        write(*,'(2d15.5)') 0.5d0*(zg(j)+zg(j-1)),rnx/rn 
+< * --- altro modo : media tra normali calcolate con t1 e t2.
+< *        write(*,'(a9,3d15.5)') 'xs ys zs ',xs,ys,zs
+< *        t1x = t1xi*ca + t1ze*sa 
+< *        t1y = t1et
+< *        t1z = -t1xi*sa + t1ze*ca
+< *        t2x = t2xi*ca + t2ze*sa 
+< *        t2y = t2et
+< *        t2z = -t2xi*sa + t2ze*ca
+< *        rn1x = t1y*wzs - t1z*wys
+< *        rn1y = t1z*wxs - t1x*wzs 
+< *        rn1z = t1x*wys - t1y*wxs
+< *        rn2x = t2y*wzs - t2z*wys
+< *        rn2y = t2z*wxs - t2x*wzs 
+< *        rn2z = t2x*wys - t2y*wxs
+< *        rn1 = sqrt(rn1x**2 + rn1y**2 + rn1z**2) 
+< *        rn2 = sqrt(rn2x**2 + rn2y**2 + rn2z**2)
+< *        rn1x = rn1x/rn1 
+< *        rn1y = rn1y/rn1 
+< *        rn1z = rn1z/rn1 
+< *        rn2x = rn2x/rn2 
+< *        rn2y = rn2y/rn2 
+< *        rn2z = rn2z/rn2
+---
+> *        rnxg(j-1) = rnx/rn
+> *        rnyg(j-1) = rny/rn
+> *        rnzg(j-1) = rnz/rn
+> * -- B: altro modo: media tra wxs e wxso, e assegno rn al centroide 
+>         wxsm = 0.5d0*(wxso+wxs)
+>         wysm = 0.5d0*(wyso+wys)
+>         wzsm = 0.5d0*(wzso+wzs)
+>         rnx = tauyn*wzsm - tauzn*wysm
+>         rny = tauzn*wxsm - tauxn*wzsm 
+>         rnz = tauxn*wysm - tauyn*wxsm
+>         rn  = sqrt(rnx**2 + rny**2 + rnz**2)
+>         rnmx = rnx/rn
+>         rnmy = rny/rn
+>         rnmz = rnz/rn
+> *        rnxg(j-1) = rnx/rn
+> *        rnyg(j-1) = rny/rn
+> *        rnzg(j-1) = rnz/rn
+> * -- C: altro modo : media tra normali calcolate con t1 e t2.
+> *                    manca da fare la normale per j=1
+>         t1x = t1xi*ca + t1ze*sa 
+>         t1y = t1et
+>         t1z = -t1xi*sa + t1ze*ca
+>         t2x = t2xi*ca + t2ze*sa 
+>         t2y = t2et
+>         t2z = -t2xi*sa + t2ze*ca
+>         rn1x = t1y*wzs - t1z*wys
+>         rn1y = t1z*wxs - t1x*wzs 
+>         rn1z = t1x*wys - t1y*wxs
+>         rn2x = t2y*wzs - t2z*wys
+>         rn2y = t2z*wxs - t2x*wzs 
+>         rn2z = t2x*wys - t2y*wxs
+>         rn1 = sqrt(rn1x**2 + rn1y**2 + rn1z**2) 
+>         rn2 = sqrt(rn2x**2 + rn2y**2 + rn2z**2)
+>         rn1x = rn1x/rn1 
+>         rn1y = rn1y/rn1 
+>         rn1z = rn1z/rn1 
+>         rn2x = rn2x/rn2 
+>         rn2y = rn2y/rn2 
+>         rn2z = rn2z/rn2
+208c241,243
+< *        rnxg(j) = s*rn1x + (1.d0-s)*rn2x
+---
+>         rnxg(j) = s*rn1x + (1.d0-s)*rn2x
+>         rnyg(j) = s*rn1y + (1.d0-s)*rn2y
+>         rnzg(j) = s*rn1z + (1.d0-s)*rn2z
+212,214c247,254
+<         tauxo= 0.d0 
+<         tauyo= tauyn
+<         tauzo= tauzn
+---
+>         tauxo = 0.d0 
+>         tauyo = tauyn
+>         tauzo = tauzn
+>         write(8,'(6d15.7)') x0,yg(j-1),zg(j-1),rnxg(j-1),rnyg(j-1),
+>      #                     rnzg(j-1)
+>         write(14,'(6d15.7)') x0,yg(j),zg(j),rn1x, rn1y,rn1z
+> *        write(13,'(6d15.5)') x0,
+> *     #       0.5d0*(yg(j)+yg(j-1)),0.5d0*(zg(j)+zg(j-1)),rnmx,rnmy,rnmz
+220c260,262
+<       rnxg(ng) = rnx/rn 
+---
+> *      rnxg(ng) = rnx/rn 
+> *      rnyg(ng) = rny/rn 
+> *      rnzg(ng) = rnz/rn 
+222d263
+<       close(7)
+225,228d265
+< *-------------------------------------------------------------
+< 
+< 
+< 
