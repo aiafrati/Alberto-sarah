@@ -1,0 +1,29 @@
+cat calsol.f \
+calvel.f \
+check.f \
+delta.f \
+disun2.f \
+doldfil1.f \
+filin.f \
+filiniz.f \
+finte.f \
+gauss.f \
+get.f \
+initial.f \
+input.f \
+intret.f \
+main.f \
+nortan.f \
+prefin.f \
+ridis4.f \
+ropn.f \
+rot.f \
+shallo.f \
+solv1.f \
+solv2.f \
+spline3.f \
+spline.f \
+splint3.f \
+splint.f \
+splver2.f \
+stampa.f > ppp.f

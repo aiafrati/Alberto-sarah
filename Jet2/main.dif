@@ -1,0 +1,116 @@
+107d106
+<           write(24,*) ycnsl(ip),zcnsl(ip)
+213a213,249
+> * ------------------------------------  CONTROLLI
+> cc - B+
+>       write(31,*) '# ',jt,zv(1)
+>       do i=1,npc+1
+>         write(31,'(2d15.7)') yv(i),zv(i)
+>       enddo
+>       write(31,*)  
+>       write(31,*)  
+>       write(32,*) '# ',jt
+>       do i=1,npc
+>         write(32,'(8d15.7)') yce(i),
+>      #       zce(i),phi(i),dphi(i),
+>      #            dpht(i),vym2(i),vzm2(i) ,amp(i)  
+>       enddo
+>       write(32,*)
+>       do i =1,nng
+>         write(32,'(8d15.7)') 0.5d0*(ygb(i)+ygb(i+1)),
+>      #        0.5d0*(zgb(i)+zgb(i+1)),phi(npc+i),dphi(npc+i),
+>      #            dpht(npc+i),vym2(npc+i),vzm2(npc+i) ,amp(npc+i)  
+>       enddo
+>       write(32,*)  
+>       write(32,*)  
+>       write(33,*) '# ',jt
+>       do i=1,npsl+1
+>         write(33,'(4d15.7)') ysl(i),zsl(i)
+>       enddo
+>       write(33,*)  
+>       write(33,*)  
+>       write(34,*) '# ',jt
+>       do i=1,npsl
+>         write(34,'(8d15.7)') 0.5d0*(ysl(i)+ysl(i+1)),
+>      #        0.5d0*(zsl(i)+zsl(i+1)),phisl(i),dphisl(i),
+>      #            dphtsl(i),vymsl2(i),vzmsl2(i) ,ampsl(i)  
+>       enddo
+>       write(34,*)  
+>       write(34,*)
+> c   -----------------------------------------------  FINE CONTROLLI
+273,307c309,343
+< cc - B+
+<       write(31,*) '# ',jt,zv(1)
+<       do i=1,npc+1
+<         write(31,'(2d15.7)') yv(i),zv(i)
+<       enddo
+<       write(31,*)  
+<       write(31,*)  
+<       write(32,*) '# ',jt
+<       do i=1,npc
+<         write(32,'(8d15.7)') yce(i),
+<      #       zce(i),phi(i),dphi(i),
+<      #            dpht(i),vym2(i),vzm2(i) ,amp(i)  
+<       enddo
+<       write(32,*)
+<       do i =1,nng
+<         write(32,'(8d15.7)') 0.5d0*(ygb(i)+ygb(i+1)),
+<      #        0.5d0*(zgb(i)+zgb(i+1)),phi(npc+i),dphi(npc+i),
+<      #            dpht(npc+i),vym2(npc+i),vzm2(npc+i) ,amp(npc+i)  
+<       enddo
+<       write(32,*)  
+<       write(32,*)  
+<       write(33,*) '# ',jt
+<       do i=1,npsl+1
+<         write(33,'(4d15.7)') ysl(i),zsl(i)
+<       enddo
+<       write(33,*)  
+<       write(33,*)  
+<       write(34,*) '# ',jt
+<       do i=1,npsl
+<         write(34,'(8d15.7)') 0.5d0*(ysl(i)+ysl(i+1)),
+<      #        0.5d0*(zsl(i)+zsl(i+1)),phisl(i),dphisl(i),
+<      #            dphtsl(i),vymsl2(i),vzmsl2(i) ,ampsl(i)  
+<       enddo
+<       write(34,*)  
+<       write(34,*)
+---
+> ccckkkcc - B+
+> ccckkk      write(31,*) '# ',jt,zv(1)
+> ccckkk      do i=1,npc+1
+> ccckkk        write(31,'(2d15.7)') yv(i),zv(i)
+> ccckkk      enddo
+> ccckkk      write(31,*)  
+> ccckkk      write(31,*)  
+> ccckkk      write(32,*) '# ',jt
+> ccckkk      do i=1,npc
+> ccckkk        write(32,'(8d15.7)') yce(i),
+> ccckkk     #       zce(i),phi(i),dphi(i),
+> ccckkk     #            dpht(i),vym2(i),vzm2(i) ,amp(i)  
+> ccckkk      enddo
+> ccckkk      write(32,*)
+> ccckkk      do i =1,nng
+> ccckkk        write(32,'(8d15.7)') 0.5d0*(ygb(i)+ygb(i+1)),
+> ccckkk     #        0.5d0*(zgb(i)+zgb(i+1)),phi(npc+i),dphi(npc+i),
+> ccckkk     #            dpht(npc+i),vym2(npc+i),vzm2(npc+i) ,amp(npc+i)  
+> ccckkk      enddo
+> ccckkk      write(32,*)  
+> ccckkk      write(32,*)  
+> ccckkk      write(33,*) '# ',jt
+> ccckkk      do i=1,npsl+1
+> ccckkk        write(33,'(4d15.7)') ysl(i),zsl(i)
+> ccckkk      enddo
+> ccckkk      write(33,*)  
+> ccckkk      write(33,*)  
+> ccckkk      write(34,*) '# ',jt
+> ccckkk      do i=1,npsl
+> ccckkk        write(34,'(8d15.7)') 0.5d0*(ysl(i)+ysl(i+1)),
+> ccckkk     #        0.5d0*(zsl(i)+zsl(i+1)),phisl(i),dphisl(i),
+> ccckkk     #            dphtsl(i),vymsl2(i),vzmsl2(i) ,ampsl(i)  
+> ccckkk      enddo
+> ccckkk      write(34,*)  
+> ccckkk      write(34,*)
+386c422
+<      #                  dpt2,dpntt,dptsl,dpntsl,jt)
+---
+>      #                  dpt2,dpnt,dptsl,dpntsl,jt)

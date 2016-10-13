@@ -1,0 +1,673 @@
+      program main
+C     +++++++++++++++++++++++++++++++++++++++++++++++++++++
+c     ++                                                 ++
+c     +  programma di calcolo del flusso generato dalla   +
+c     +    caduta di un wedge avente un deadrise angle    +
+c     +               pari ad alfa (gradi)                +
+c     ++                                                 ++
+c     +++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+c     - File inclusi: 
+
+c       -- "slam_p.h" in cui sono riportati la definizione 
+c                     delle variabili e i parametri per il 
+c                     dimensionamento,
+
+      include"slam_p.h"
+      include"slam_f.h"
+      dimension yv(npamx),zv(npamx),yn(npamx),zn(npamx)
+      dimension ysl(npamx),zsl(npamx),ynsl(npamx),znsl(npamx)
+      dimension phi(npamx),phisl(npamx),phinsl(npamx)
+      dimension ygb(npamx),zgb(npamx)
+      dimension dddphit(-npamx:npamx),ddphit(-npamx:npamx)
+      dimension xi(-npamx:npamx),xin(-npamx:npamx)
+      dimension h(-npamx:npamx),dh(-npamx:npamx),hh(-npamx:npamx)
+      dimension dphi(npamx),dphisl(npamx)
+      dimension dpht(npamx),dphtsl(npamx)
+      dimension yce(npamx),zce(npamx),ycn(npamx),zcn(npamx)
+      dimension ycsl(npamx),zcsl(npamx),ycnsl(npamx),zcnsl(npamx)
+      dimension tmy(npamx),tmz(npamx),rny(npamx),rnz(npamx)
+      dimension tmysl(npamx),tmzsl(npamx),rnysl(npamx),rnzsl(npamx)
+      dimension amp(npamx),ampsl(npamx)
+      dimension vym1(npamx),vzm1(npamx),vym2(npamx),vzm2(npamx)
+      dimension vymsl1(npamx),vzmsl1(npamx),vymsl2(npamx),vzmsl2(npamx)
+      dimension depn1(npamx),depn2(npamx),zcr(npamx)
+      dimension pre(npamx)
+      dimension dpt(npamx),dpnt(npamx),dptsl(npamx),dpntsl(npamx)
+      dimension dpht2(npamx)
+      dimension pres(npamx),yco(npamx),zco(npamx)
+      dimension vyo(npamx),vzo(npamx),phio(npamx) 
+      dimension dphtbsl(npamx),phb(npamx),ph(npamx),dphn(npamx)
+      dimension dphnb(npamx) 
+      dimension phib(npamx),dphibsl(npamx),rl(npamx) 
+      dimension a1(npamx),b1(npamx),c1(npamx),d1(npamx),e1(npamx)
+      dimension xig(-npamx:npamx),xigs(-npamx:npamx)
+      dimension zeb(-npamx:npamx),zegs(-npamx:npamx),zef(-npamx:npamx)
+      dimension hp(npamx),xj(npamx),ze(npamx),xis(npamx),zes(npamx)
+      dimension dpttsl(npamx),dpb(npamx),dptb(npamx),dpntbsl(npamx)
+      dimension a2(npamx),b2(npamx),c2(npamx),d2(npamx),e2(npamx)
+      dimension pre2(npamx),dpt2(npamx)
+      dimension vxi(npamx),dpntt(npamx)
+      dimension xigb(-npamx:npamx),zegb(-npamx:npamx)
+      dimension xigf(-npamx:npamx),zegf(-npamx:npamx)
+      dimension ry(npamx),rz(npamx),ty(npamx),tz(npamx)
+      dimension ygn(npamx),zgn(npamx),ygs2(npamx),zgs2(npamx)
+      dimension tg(npamx),tgb(npamx),ksep(npamx),kse(npamx) 
+      dimension phin(npamx),phg(npamx),phgs2(npamx)
+      dimension depn1s(npamx),depn2s(npamx)
+      dimension tcb(npamx),ycb(npamx),zcb(npamx),tc(npamx)
+      dimension kord(npamx),kor(npamx)
+*
+*
+      call input(vfall0,ancut,iiget,jjget,frint,rmg,epsgg,eskg,
+     #       gfrac,pro0 ,frdt,ampp,pfraz,escr,estr,tend,ksta,scon,svel,
+     #       spot,spre,idis,ift,iford,frtend)
+      call initial(t,amplim,vfall,llf,spo0,pro0,npc,npt,npsl,
+     #           kget,ng,yv,zv,yce,zce,ysl,zsl,ycsl,zcsl,amp,ampsl,
+     #           rny,rnz,rnysl,rnzsl,tmy,tmz,tmysl,tmzsl,ampp,vfall0,
+     #           dphi,phisl,pfraz,estr,escr,epsg,epsgg,ampli,
+     #           ygn,zgn,ygs2,zgs2,tg,ngo,ngo1,nsep,nsepo,ksep,kord)
+* - soluzione, calcolo velocita
+      call solv1(npc,nng,npsl,yv,zv,ygb,zgb,ysl,zsl,amp,ampsl,
+     #                  phi,dphi,phisl,dphisl,jt)
+*
+      call calvel(npsl,npc,ng,kget,mb,mf,mt,m,n,nt,ntt,
+     #            phi,phib,phb,dpht,dphi,dphisl,dphnb,dphtsl,phisl,
+     #            rl,a1,b1,c1,d1,e1,xj,ze,xis,zes,
+     #            amp,vym1,vzm1,rny,rnz,tmy,tmz,
+     #            ampsl,vymsl1,vzmsl1,rnysl,rnzsl,tmysl,tmzsl,vxi,
+     #            ry,rz,ty,tz,kse)
+      call stampa(vfall,ng,kget,npc,npsl,jt,t,dt,frdt,llf,
+     #                  scon,svel,spot,spre,phi,dphi,phisl,dphisl, 
+     #                 yv,zv,yce,zce,ysl,zsl,ycsl,zcsl,
+     #                 vym1,vzm1,vymsl1,vzmsl1,
+     #                 dpht,dphtsl,dpt,dpnt,pre,pre2,pres,vxi)
+*
+*----------------------------------------------------------------------
+*- inizio integrazione temporale
+      proat = zv(1)
+      jt    = 0
+      do while (t.lt.tend)
+        jt=jt+1
+        vfall = vfall0
+        if(jt.lt.30) vfall=vfall0*float(jt)/float(30) !E LA PRIMA ITERAZIONE ?
+*- calcolo passo di integrazione, e volume
+        write(*,*) 'prima check, nsep',nsep
+        call check(yv,zv,npc,npsl,dt,t,jt,ampsl,frdt,vymsl1,vzmsl1,
+     #             ycsl,zcsl,kget,frtend,tend,zgn,ngo,vfall,ngo1,nsep)
+        write(*,*) 'dt jt ',dt,jt,vfall
+*- spostamento (predictor) dei centroidi 
+        write(*,*) 'predictor',npsl
+        write(15,*) '#jt ',jt,ng
+        write(16,*) '#jt ',jt,ng
+c      if(jt.eq.254)then
+c        ksep(npc+ng)   =1
+c        ksep(npc+ng-1) =1
+c        ksep(npc+ng-2) =1
+c        ksep(npc+ng-3) =1
+c        ksep(npc+ng-4) =1
+c      endif
+        do ip = 1,npc+ng
+          write(15,'(2d15.7,i4)') vym1(ip),vzm1(ip),ksep(ip)
+          if(nsep.eq.1)then
+          if(ksep(ip).ne.0)then
+          deph2      = vym1(ip)**2+ vzm1(ip)**2
+          depn1s(ip) = deph2/2.d0
+          ycn(ip)    = yce(ip) + vym1(ip)*dt/2.d0
+          zcn(ip)    = zce(ip) + vzm1(ip)*dt/2.d0
+          phin(ip)   = phi(ip) + depn1s(ip)*dt/2.d0
+          else 
+          phin(ip)   = phi(ip) 
+          endif 
+          write(16,'(2d15.7,i4)') phi(ip),phin(ip),ksep(ip)
+          if(ksep(ip).eq.2)then
+            ay  = ycn(ip)  - ygn(ngo)
+            ay1 = ycn(ip-1)- ygn(ngo)
+            if(ay1.gt.0.d0)then
+              ksep(ip) = 1
+            else
+              ycn(ip)  = yce(ip)
+              zcn(ip)  = zce(ip)
+              phin(ip) = phi(ip) 
+            endif 
+          endif 
+          else
+              ycn(ip)  = yce(ip)
+              zcn(ip)  = zce(ip)
+              phin(ip) = phi(ip)
+          endif 
+        enddo
+        write(15,*) 
+        write(16,*) 
+        do ip = 1,npsl
+          write(15,'(2d15.7,i4)') vymsl1(ip),vzmsl1(ip),ksep(ip)
+          deph2        = vymsl1(ip)**2 + vzmsl1(ip)**2
+          depn1(ip)    = deph2/2.d0
+          ycnsl(ip)    = ycsl(ip) + vymsl1(ip)*dt
+          zcnsl(ip)    = zcsl(ip) + vzmsl1(ip)*dt
+          phinsl(ip)   = phisl(ip)+ depn1(ip)*dt
+          write(16,'(2d15.7)') phisl(ip),phinsl(ip)
+        enddo
+        write(15,*) 
+        write(15,*) 
+        write(16,*) 
+        write(16,*) 
+*- sposto vertice corpo
+        proat = zv(1) - vfall*dt
+*
+        write(30,*) '# jt ',jt,ng
+        do i=1,npc+ng
+          write(30,'(4d16.8,i4)') ycn(i),zcn(i),phin(i),dphi(i),ksep(i)
+        enddo
+        write(30,*)
+        write(30,*)
+        write(31,*) '# jt ',jt
+        do i=1,npc+ng+1
+          write(31,*) yn(i),zn(i),ksep(i)
+        enddo
+        write(31,*)
+        write(31,*)
+        write(32,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(32,'(4d15.7)') ycnsl(i),zcnsl(i),phinsl(i),dphisl(i)
+        enddo
+        write(32,*)
+        write(32,*)
+        write(33,*) '# jt ',jt
+        do i=1,npsl+1   
+          write(33,*) ynsl(i),znsl(i)
+        enddo
+        write(33,*)
+        write(33,*)
+*- ricostruisco la configurazione di tentativo dei vertici
+        call splver2(ycnsl,zcnsl,ynsl,znsl,npsl,proat,
+     #               kget,estr,ng,ygn,zgn,ygs2,zgs2,tg,ngo,iint,jt,
+     #               ampli,ngo1,nsep,nsepo,ycn,zcn,npc,phg,phgs2,
+     #               phin,ksep,di,ang,tc)
+*
+        write(40,*) '# jt ',jt,ng
+        do i=1,npc+ng
+          write(40,'(4d16.8,i4)') ycn(i),zcn(i),phin(i),dphi(i),ksep(i)
+        enddo
+        write(40,*)
+        write(40,*)
+        write(41,*) '# jt ',jt
+        do i=1,npc+ng+1
+          write(41,*) yn(i),zn(i),ksep(i)
+        enddo
+        write(41,*)
+        write(41,*)
+        write(42,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(42,'(4d15.7)') ycnsl(i),zcnsl(i),phinsl(i),dphisl(i)
+        enddo
+        write(42,*)
+        write(42,*)
+        write(43,*) '# jt ',jt,ng
+        do i=1,npsl+1   
+          write(43,*) ynsl(i),znsl(i)
+        enddo
+        write(43,*)
+        write(43,*)
+*- rigriglio corpo
+        call ridis5(0,ng,proat,kget,ynsl,znsl,ygb,zgb,
+     #                  escr,npc,npt,yn,zn,ycn,zcn,ampli,
+     #                  ygn,zgn,ygs2,zgs2,tg,ngo,tgb,iint,ngo1,
+     #                  nsep,nsepo,ksep,phg,phgs2,phin,
+     #                  ycnsl,zcnsl,ycb,zcb,tcb,jt,tysl,nngo,
+     #                  ne,phinsl,npsl,di,ang,tc,kord,frint)
+        write(50,*) '# jt ',jt,ng,ngo1
+*- normali tangenti  ampiezze e boundary conditions
+        call nortan(vfall,yn,zn,amp,tmy,tmz,rny,rnz,npc,
+     #            ynsl,znsl,ampsl,tmysl,tmzsl,rnysl,rnzsl,npsl,
+     #            dphi,kget,ng,ycn,zcn,yce,zce,yv,zv,
+     #            ycnsl,zcnsl,ycsl,zcsl,ysl,zsl,phinsl,phisl,
+     #            phin,phi,ygb,zgb,0,ksep,jt)
+*- trattamneto getto
+        if(kget.eq.1)then
+            call  get(ng,npc,ycnsl,zcnsl,ycn,zcn,yn,zn,  
+     #               xigs,zegs,xigb,zegb,xigf,zegf) 
+*
+        endif
+        do i=1,npc+ng
+          write(50,'(4d16.8,i4)') ycn(i),zcn(i),phin(i),dphi(i),ksep(i)
+        enddo
+        write(50,*)
+        write(50,*)
+        write(51,*) '# jt ',jt
+        do i=1,npc+ng+1
+          write(51,*) yn(i),zn(i),ksep(i)
+        enddo
+        write(51,*)
+        write(51,*)
+        write(52,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(52,'(4d16.8)') ycnsl(i),zcnsl(i),phinsl(i),dphisl(i)
+        enddo
+        write(52,*)
+        write(52,*)
+        write(53,*) '# jt ',jt
+        do i=1,npsl+1   
+          write(53,*) ynsl(i),znsl(i)
+        enddo
+        write(53,*)
+        write(53,*)
+*- risolvo il problema nella configurazione intermedia
+        print*,'t_old ',t
+        t   = t + dt
+        nng = kget*ng
+        print*,'t_new ',t
+        if(kget.eq.0)then
+          call solv1(npc,nng,npsl,yn,zn,ygb,zgb,ynsl,znsl,amp,ampsl,
+     #                  phin,dphi,phinsl,dphisl,jt)
+        elseif(kget.eq.1)then
+c          call solv2(frint,ng,npc,npsl,ycn,zcn,yn,zn,ynsl,znsl,
+c     #            ycnsl,zcnsl,dphi,phinsl,dphtsl,dphtbsl,phb,
+c     #           xigs,zegs,xigb,zegb,xigf,zegf,
+c     #           ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+c     #          ph,dphn,dphnb,a1,b1,c1,d1,e1,phi,phib,dphisl,dphibsl,rl,
+c     #          mb,mf,mt,m,n,nt,ntt,xj,ze,xis,zes,jt)
+          call solv22(frint,ng,npc,npsl,ycn,zcn,yn,zn,ynsl,znsl,
+     #            ycnsl,zcnsl,dphi,phinsl,dphtsl,dphtbsl,phb,
+     #           xigs,zegs,xigb,zegb,xigf,zegf,
+     #           ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+     #        ph,dphn,dphnb,a1,b1,c1,d1,e1,phin,phib,dphisl,dphibsl,rl,
+     #          mb,mf,mt,m,n,nt,ntt,xj,ze,xis,zes,jt,ksep,kse,kord,kor)
+          call calsol(mb,mf,mt,m,n,nt,ntt,phin,phib,phb,dphisl,
+     #           dphnb,rl,a1,b1,c1,d1,e1,xj,ze,xis,zes,ry,rz,kse,dphi)
+        endif
+*- calcolo velocita
+          call calvel(npsl,npc,ng,kget,mb,mf,mt,m,n,nt,ntt,
+     #            phin,phib,phb,dpht,dphi,dphisl,dphnb,dphtsl,phinsl,
+     #              rl,a1,b1,c1,d1,e1,xj,ze,xis,zes,
+     #              amp,vym2,vzm2,rny,rnz,tmy,tmz,
+     #              ampsl,vymsl2,vzmsl2,rnysl,rnzsl,tmysl,tmzsl,vxi,
+     #              ry,rz,ty,tz,kse)
+        write(60,*) '# jt ',jt,ng,ngo1
+        do i=1,npc+ng
+          write(60,'(4d16.8,i4)') ycn(i),zcn(i),phin(i),dphi(i),ksep(i)
+        enddo
+        write(60,*)
+        write(60,*)
+        write(61,*) '# jt ',jt
+        do i=1,npc+ng+1
+          write(61,*) yn(i),zn(i),ksep(i)
+        enddo
+        write(61,*)
+        write(61,*)
+        write(62,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(62,'(4d16.8)') ycnsl(i),zcnsl(i),phinsl(i),dphisl(i)
+        enddo
+        write(62,*)
+        write(62,*)
+        write(63,*) '# jt ',jt
+        do i=1,npsl+1   
+          write(63,*) ynsl(i),znsl(i)
+        enddo
+        write(63,*)
+        write(63,*)
+*- spostamento definitivo dei centroidi
+        write(*,*) 'corrector '
+        tysl = 1.d31
+        do ip = 1,npc+ng
+          if(ksep(ip).eq.1)then
+          deph2      = vym2(ip)**2 + vzm2(ip)**2
+          depn2s(ip) = deph2/2.d0
+          ycn(ip)    = yce(ip)+(vym1(ip)+vym2(ip))*dt/2.d0
+          zcn(ip)    = zce(ip)+(vzm1(ip)+vzm2(ip))*dt/2.d0
+          phin(ip)   = phi(ip)+(depn1s(ip)+depn2s(ip))*dt/2.d0
+          tysl       = min(tysl,ycn(ip))
+          endif 
+        enddo
+        do ip = 1,npsl
+          deph2       = vymsl2(ip)**2 + vzmsl2(ip)**2
+          depn2(ip)   = deph2/2.d0
+          ycnsl(ip)   = ycsl(ip)+(vymsl1(ip)+vymsl2(ip))*dt/2.d0
+          zcnsl(ip)   = zcsl(ip)+(vzmsl1(ip)+vzmsl2(ip))*dt/2.d0
+          phinsl(ip)  = phisl(ip)+(depn1(ip)+depn2(ip))*dt/2.d0
+        enddo
+*- ricostruisco la configurazione della superficie libera
+        call splver2(ycnsl,zcnsl,ynsl,znsl,npsl,proat,
+     #               kget,estr,ng,ygn,zgn,ygs2,zgs2,tg,ngo,iint,jt,
+     #               ampli,ngo1,nsep,nsepo,ycn,zcn,npc,phg,phgs2,
+     #               phin,ksep,di,ang,tc)
+        write(70,*) '# jt ',jt,ng
+        do i=1,npc+ng
+          write(70,'(4d16.8,i4)') ycn(i),zcn(i),phin(i),dphi(i),ksep(i)
+        enddo
+        write(70,*)
+        write(70,*)
+        write(71,*) '# jt ',jt
+        do i=1,npc+ng+1
+          write(71,*) yn(i),zn(i),ksep(i)
+        enddo
+        write(71,*)
+        write(71,*)
+        write(72,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(72,'(4d16.8)') ycnsl(i),zcnsl(i),phinsl(i),dphisl(i)
+        enddo
+        write(72,*)
+        write(72,*)
+        write(73,*) '# jt ',jt
+        do i=1,npsl+1   
+          write(73,*) ynsl(i),znsl(i)
+        enddo
+        write(73,*)
+        write(73,*)
+*- calcolo angolo intersezion, event. separo (e/o rigriglio) il getto
+        call shallo(ynsl,znsl,ygb,zgb,kget,jt,npsl,
+     #               ng,ampli,rmg,iiget,jjget,
+     #               ycnsl,zcnsl,phinsl,dphisl,epsg,epsgg,eskg,gfrac,
+     #               ygn,zgn,ygs2,zgs2,tg,tgb,ngo,ngo1,nsep,
+     #               ycb,zcb,tcb,nngo)
+*- redistribuzione centroidi e vertici SL
+        if (mmm.eq.0.or.jt.le.jjget) then
+        call disun2(jt,yn,zn,ng,ynsl,znsl,ycnsl,zcnsl,phinsl,npsl,
+     #    ygb,zgb,escr,kget,estr,amplim,ampli,npt,npc,iiget,ycb,zcb)
+*- ridefinizione (e ridiscretizzazione) dei pannelli sul corpo
+        nng=ng*kget
+        write(80,*) '# jt ',jt,ng
+        do i=1,npc+nngo
+          write(80,'(4d16.8,i4)') ycn(i),zcn(i),phin(i),dphi(i),ksep(i)
+        enddo
+        write(80,*)
+        write(80,*)
+        write(81,*) '# jt ',jt
+        do i=1,npc+nngo+1
+          write(81,*) yn(i),zn(i),ksep(i)
+        enddo
+        write(81,*)
+        write(81,*)
+        write(82,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(82,'(4d16.8)') ycnsl(i),zcnsl(i),phinsl(i),dphisl(i)
+        enddo
+        write(82,*)
+        write(82,*)
+        write(83,*) '# jt ',jt
+        do i=1,npsl+1   
+          write(83,*) ynsl(i),znsl(i)
+        enddo
+        write(83,*)
+        write(83,*)
+c        if(jt.eq.iiget+1) stop
+        nng=ng*kget
+        mmm=mod(jt,idis)
+        call ridis5(1,ng,proat,kget,ynsl,znsl,ygb,zgb,
+     #                  escr,npc,npt,yn,zn,ycn,zcn,ampli,
+     #                  ygn,zgn,ygs2,zgs2,tg,ngo,tgb,iint,ngo1,
+     #                  nsep,nsepo,ksep,phg,phgs2,phin,
+     #                  ycnsl,zcnsl,ycb,zcb,tcb,jt,tysl,nngo,
+     #                  ne,phinsl,npsl,di,ang,tc,kord,frint)
+        else
+*- ridefinizione (e ridiscretizzazione) dei pannelli sul corpo
+        call ridis5(0,ng,proat,kget,ynsl,znsl,ygb,zgb,
+     #                  escr,npc,npt,yn,zn,ycn,zcn,ampli,
+     #                  ygn,zgn,ygs2,zgs2,tg,ngo,tgb,iint,ngo1,
+     #                  nsep,nsepo,ksep,phg,phgs2,phin,
+     #                  ycnsl,zcnsl,ycb,zcb,tcb,jt,tysl,nngo,
+     #                  ne,phinsl,npsl,di,ang,tc,kord,frint)
+        end if
+        nng=ng*kget
+*- filtro la superficie libera
+        mm = mod(jt,ift)
+        if (mm.eq.0) then
+          call doldfil1(ynsl,1+iford,npsl-10,npsl+1)
+          call doldfil1(znsl,1+iford,npsl-10,npsl+1)
+          call doldfil1(phinsl,1+iford,npsl-10,npsl)
+        end if
+          call nortan(vfall,yn,zn,amp,tmy,tmz,rny,rnz,npc,
+     #            ynsl,znsl,ampsl,tmysl,tmzsl,rnysl,rnzsl,npsl,
+     #            dphi,kget,ng,ycn,zcn,yce,zce,yv,zv,
+     #            ycnsl,zcnsl,ycsl,zcsl,ysl,zsl,phinsl,phisl,
+     #            phin,phi,ygb,zgb,1,ksep,jt)
+        write(90,*) '# jt ',jt,ng
+        do i=1,npc+ng
+          write(90,'(4d16.8,i4)') ycn(i),zcn(i),phin(i),dphi(i),ksep(i)
+        enddo
+        write(90,*)
+        write(90,*)
+        write(91,*) '# jt ',jt
+        do i=1,npc+ng+1
+          write(91,*) yn(i),zn(i),ksep(i)
+        enddo
+        write(91,*)
+        write(91,*)
+        write(92,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(92,'(4d16.8)') ycnsl(i),zcnsl(i),phinsl(i),dphisl(i)
+        enddo
+        write(92,*)
+        write(92,*)
+        write(93,*) '# jt ',jt
+        do i=1,npsl+1   
+          write(93,*) ynsl(i),znsl(i)
+        enddo
+        write(93,*)
+        write(93,*)
+*- trattamento getto 
+        if(kget.eq.1)then
+            call  get(ng,npc,ycsl,zcsl,ycn,zcn,yn,zn,  
+     #               xigs,zegs,xigb,zegb,xigf,zegf) 
+        endif
+        nng = kget*ng
+* - chiamo il solutore:
+* - prima ricalcolo dphtsl (non so se serve, dipende dalle BCs
+        do i=1,npsl
+          if(i.eq.1)then
+            tf = sqrt( (ycsl(i+1)-ycsl(i))**2 + (zcsl(i+1)-zcsl(i))**2 )
+            dff= (phisl(i+1)-phisl(i))/tf
+            dphtsl(i) = dff
+          elseif(i.eq.npsl)then
+            tb = sqrt( (ycsl(i-1)-ycsl(i))**2 + (zcsl(i-1)-zcsl(i))**2 )
+            dfb= (phisl(i)-phisl(i-1))/tb
+            dphtsl(i) = dfb
+          else
+            tf = sqrt( (ycsl(i+1)-ycsl(i))**2 + (zcsl(i+1)-zcsl(i))**2 )
+            tb = sqrt( (ycsl(i-1)-ycsl(i))**2 + (zcsl(i-1)-zcsl(i))**2 )
+            dff= (phisl(i+1)-phisl(i))/tf
+            dfb= (phisl(i)-phisl(i-1))/tb
+            dphtsl(i) = 0.5d0*(dff+dfb)
+          endif
+        enddo
+        if(jt.le.jjget)then
+          call solv1(npc,nng,npsl,yv,zv,ygb,zgb,ysl,zsl,amp,ampsl,
+     #                  phi,dphi,phisl,dphisl,jt)
+        else
+c          call solv2(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+c     #           ycsl,zcsl,dphi,phisl,dphtsl,dphtbsl,phb,
+c     #           xigs,zegs,xigb,zegb,xigf,zegf,
+c     #           ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+c     #           ph,dphn,dphnb,a1,b1,c1,d1,e1,
+c     #           phi,phib,dphisl,dphibsl,rl,mb,mf,mt,m,n,nt,ntt,
+c     #           xj,ze,xis,zes,jt)
+          call solv22(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+     #           ycsl,zcsl,dphi,phisl,dphtsl,dphtbsl,phb,
+     #           xigs,zegs,xigb,zegb,xigf,zegf,
+     #           ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+     #           ph,dphn,dphnb,a1,b1,c1,d1,e1,
+     #           phi,phib,dphisl,dphibsl,rl,mb,mf,mt,m,n,nt,ntt,
+     #           xj,ze,xis,zes,jt,ksep,kse,kord,kor)
+          call calsol(mb,mf,mt,m,n,nt,ntt,phi,phib,phb,dphisl,
+     #                  dphnb,rl,a1,b1,c1,d1,e1,xj,ze,xis,zes,
+     #                 ry,rz,kse,dphi)
+        endif
+*- velocita   
+        call calvel(npsl,npc,ng,kget,mb,mf,mt,m,n,nt,ntt,
+     #                 phi,phib,phb,dpht,dphi,dphisl,dphnb,dphtsl,phisl,
+     #                 rl,a1,b1,c1,d1,e1,xj,ze,xis,zes,
+     #                 amp,vym1,vzm1,rny,rnz,tmy,tmz,
+     #                 ampsl,vymsl1,vzmsl1,rnysl,rnzsl,tmysl,tmzsl,vxi,
+     #                 ry,rz,ty,tz,kse)
+*
+        write(10,*) '# jt ',jt,ng
+        do i=1,npc+ng
+          write(10,'(4d16.8,i4)') yce(i),zce(i),phi(i),dphi(i),ksep(i)
+        enddo
+        write(10,*)
+        write(10,*)
+        write(11,*) '# jt ',jt
+        do i=1,npc+ng+1
+          write(11,*) yv(i),zv(i),ksep(i)
+        enddo
+        write(11,*)
+        write(11,*)
+        write(12,*) '# jt ',jt,ng
+        do i=1,npsl  
+          write(12,'(4d16.8)') ycsl(i),zcsl(i),phisl(i),dphisl(i)
+        enddo
+        write(12,*)
+        write(12,*)
+        write(13,*) '# jt ',jt
+        do i=1,npsl+1   
+          write(13,*) ysl(i),zsl(i)
+        enddo
+        write(13,*)
+        write(13,*)
+* - PRESSIONE ------------------------------------------------------ 
+* -- calcolo derivata tangenziale della velocita tangenziale
+      nng   = ng*kget
+      dphtu    = -vfall*san
+      dphtd    = (phi(2)-phi(1))/(0.5d0*(amp(1)+amp(2)))
+      dpht2(1) = ( dphtd - dphtu )/amp(1)
+      dpnt(1)  = dpht2(1)*dphi(1)
+      dpntt(1)  = dpht2(1)*dphi(1)
+      i = 1 
+      do i = 2,npc+nng-1
+        amu = 0.5d0*(amp(i-1)+amp(i))
+        amd = 0.5d0*(amp(i+1)+amp(i))
+        dpht2u    = (dpht(i)-dpht(i-1))/amu
+        dpht2d    = (dpht(i+1)-dpht(i))/amd
+        dpht2(i)  = 0.5d0*(dpht2u+dpht2d)
+        vxiu      = (vxi(i)-vxi(i-1))/amu
+        vxid      = (vxi(i+1)-vxi(i))/amd
+        dpht22    = 0.5d0*(vxiu+vxid)
+        dpnt(i)   = dpht2(i)*dphi(i)
+        if(i.ge.npc+1)then 
+         dpntt(i)   = dpht22*dphi(i)
+         else
+         dpntt(i)   = dpnt(i)
+        endif  
+      enddo     
+      dpht2(npc+nng)=(dpht(npc+nng)-dpht(npc+nng-1))/
+     #               (0.5d0*(amp(npc+nng)+amp(npc+nng-1)))
+      dpnt(npc+nng) = dpht2(npc+nng)*dphi(npc+nng) 
+      dpntt(npc+nng) = dpnt(npc+nng) 
+* -- calcolo dphi/dt sulla SL
+      do i = 1,npsl
+        dptsl(i) = -(dphisl(i)**2 + dphtsl(i)**2)/2.d0
+      enddo
+
+*
+      call bcpre(ng,kget,vfall,npc,npsl,tmz,amp,phi,dphi,dpht,
+     #                 vxi,dphisl,dphtsl,yce,zce,dpnt,dpntt,dptsl)
+      if(kget.eq.0)then
+        call solv1(npc,nng,npsl,yv,zv,ygb,zgb,ysl,zsl,amp,ampsl,
+     #                  dpt2,dpnt,dptsl,dpntsl,jt)
+      else
+c          call solv2(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+c     #           ycsl,zcsl,dphi,phisl,dphtsl,dphtbsl,phb,
+c     #           xigs,zegs,xigb,zegb,xigf,zegf,
+c     #           ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+c     #           ph,dphn,dphnb,a1,b1,c1,d1,e1,
+c     #           phi,phib,dphisl,dphibsl,rl,mb,mf,mt,m,n,nt,ntt,
+c     #           xj,ze,xis,zes,jt)
+c        call solv2p(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+c     #              ycsl,zcsl,dpnt,dptsl,dpttsl,dpttsl,dpb,
+c     #              xigs,zegs,xigb,zegb,xigf,zegf,
+c     #              ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+c     #              ph,dphn,dphnb,a2,b2,c2,d2,e2,dpt,dptb,
+c     #              dpntsl,dpntbsl,rl,mb,mf,mt,m,n,nt,ntt,xj,ze,xis,
+c     #              zes,jt)
+        call solv22(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+     #              ycsl,zcsl,dpnt,dptsl,dpttsl,dpttsl,dpb,
+     #              xigs,zegs,xigb,zegb,xigf,zegf,
+     #              ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+     #              ph,dphn,dphnb,a2,b2,c2,d2,e2,dpt,dptb,
+     #              dpntsl,dpntbsl,rl,mb,mf,mt,m,n,nt,ntt,xj,ze,xis,
+     #              zes,jt,ksep,kse,kord,kor)
+*
+        call calsol(mb,mf,mt,m,n,nt,ntt,dpt,dptb,dpb,dpntsl,dphnb,
+     #             rl,a2,b2,c2,d2,e2,xj,ze,xis,zes,ry,rz,kse,dpnt)
+        call solv1(npc,nng,npsl,yv,zv,ygb,zgb,ysl,zsl,amp,ampsl,
+     #                  dpt2,dpnt,dptsl,dpntsl,jt)
+      endif
+*
+* - calcolo con Dphi/Dt
+      call prefin(npc,nng,npco,nngo,vfall,dt,dpht,dphi,tmy,tmz,
+     #                  rny,rnz,vyo,vzo,yce,zce,yco,zco,phi,phio,
+     #                  vym1,vzm1,pres)
+* -- calcolo pressione e forza
+      ff  = 0.d0
+      ff2 = 0.d0
+      do i=1,npc+nng
+        p1 = -dpt(i)
+        p11 = -dpt2(i)
+        p2 = -(dphi(i)**2+dpht(i)**2)/2.d0
+        pre(i) = p1+p2
+        pre2(i) = p11+p2
+        ff = ff + pre(i)*amp(i)*rnz(i)
+        ff2 = ff2 + pres(i)*amp(i)*rnz(i)
+c        write(41,'(i6,6d15.6)') i,yce(i),zce(i),p1,-p2,pre(i),pre2(i)
+c        if(i.eq.npc) write(41,*)
+      enddo
+c      write(41,*)
+c      write(41,*)
+      ff  = -2.d0*ff
+      ff2 = -2.d0*ff2
+      write(99,'(i10,3d15.7)') jt,t,ff,ff2
+* FINE PRESSIONE -------------------------------------------------------
+* - stampo
+      if(mod(jt,ksta).eq.0.or.jt.le.200)then
+      call stampa(vfall,ng,kget,npc,npsl,jt,t,dt,frdt,llf,
+     #                  scon,svel,spot,spre,phi,dphi,phisl,dphisl, 
+     #                 yv,zv,yce,zce,ysl,zsl,ycsl,zcsl,
+     #                 vym1,vzm1,vymsl1,vzmsl1,
+     #                 dpht,dphtsl,dpt,dpnt,pre,pre2,pres,vxi)
+      endif
+*
+      nng = ng*kget
+c      if(jt.eq.jjget+1)stop
+* ------------------------------------  CONTROLLI
+cc - B+
+c      write(31,*) '# ',jt,zv(1)
+c      do i=1,npc+1
+c        write(31,'(2d15.7)') yv(i),zv(i)
+c      enddo
+c      write(31,*)  
+c      write(31,*)  
+c      write(32,*) '# ',jt
+c      do i=1,npc
+c        write(32,'(8d15.7)') yce(i),
+c     #       zce(i),phi(i),dphi(i),
+c     #            dpht(i),vym2(i),vzm2(i) ,amp(i)  
+c      enddo
+c      write(32,*)
+c      do i =1,nng
+c        write(32,'(8d15.7)') 0.5d0*(ygb(i)+ygb(i+1)),
+c     #        0.5d0*(zgb(i)+zgb(i+1)),phi(npc+i),dphi(npc+i),
+c     #            dpht(npc+i),vym2(npc+i),vzm2(npc+i) ,amp(npc+i)  
+c      enddo
+c      write(32,*)  
+c      write(32,*)  
+c      write(33,*) '# ',jt
+c      do i=1,npsl+1
+c        write(33,'(4d15.7)') ysl(i),zsl(i)
+c      enddo
+c      write(33,*)  
+c      write(33,*)  
+c      write(34,*) '# ',jt
+c      do i=1,npsl
+c        write(34,'(8d15.7)') 0.5d0*(ysl(i)+ysl(i+1)),
+c     #        0.5d0*(zsl(i)+zsl(i+1)),phisl(i),dphisl(i),
+c     #            dphtsl(i),vymsl2(i),vzmsl2(i) ,ampsl(i)  
+c      enddo
+c      write(34,*)  
+c      write(34,*)
+*-----------------------------------------------  FINE CONTROLLI
+      enddo
+*
+      stop
+      end

@@ -1,0 +1,28 @@
+6c6
+<      #                    xg,zg,xgs2,zgs2,tg,ngo,iint)
+---
+>      #                    xg,zg,xgs2,zgs2,tg,ngo,iint,jt)
+68c68
+<            write(*,*) xg(i),zg(i),r2
+---
+> c           write(*,*) xg(i),zg(i),r2
+154a155,158
+>         xi = xip
+>         zi = zip
+>         xp(1) = xi
+>         zp(1) = zi
+156,157c160,163
+<             write(*,*) 'SPLVER, intersezione non trovata ! '
+<             stop
+---
+>             write(*,*) 'SPLVER, intersezione non trovata ! ',jt
+>             xp(1) = x1 + 0.5d0*w1x
+>             zp(1) = z1 + 0.5d0*w1z
+> c            stop
+162,165c168
+<         xi = xip
+<         zi = zip
+<         xp(1) = xi
+<         zp(1) = zi
+---
+>         write(*,'(2d25.10)')  xp(1),zp(1)

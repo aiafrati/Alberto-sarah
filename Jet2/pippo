@@ -1,0 +1,47 @@
+initial.f:     #             ygn,zgn,ygs2,zgs2,tg,ngo,ngo1,nsep,nsepo,ksep)
+initial.f:      dimension tg(npamx),ygs2(npamx),zgs2(npamx),ksep(npamx)
+initial.f:          ksep(i)=0
+main.f:      dimension tg(npamx),tgb(npamx),ksep(npamx),kse(npamx) 
+main.f:     #           ygn,zgn,ygs2,zgs2,tg,ngo,ngo1,nsep,nsepo,ksep)
+main.f:          if(ksep(ip).ne.0)then
+main.f:          if(ksep(ip).eq.2) ksep(ip)=1 
+main.f:     #               phin,ksep)
+main.f:        write(32,'(2d15.7,i4)') ycn(i),zcn(i),ksep(i)
+main.f:     #                       0.5d0*(zgb(i)+zgb(i+1)),ksep(i)
+main.f:     #                  nsep,nsepo,ksep,phg,phgs2,phin)
+main.f:     #          mb,mf,mt,m,n,nt,ntt,xj,ze,xis,zes,jt,ksep,kse)
+main.f:          if(ksep(ip).ne.0)then
+main.f:        write(58,'(2d15.7,i4)') ycn(i),zcn(i),ksep(i)
+main.f:     #                       0.5d0*(zgb(i)+zgb(i+1)),ksep(npc+i)
+main.f:     #               phin,ksep)
+main.f:        write(42,'(2d15.7,i4)') ycn(i),zcn(i),ksep(i)
+main.f:     #                       0.5d0*(zgb(i)+zgb(i+1)),ksep(npc+i)
+main.f:          write(62,*) ycn(i),zcn(i),ksep(i)
+main.f:     #                0.5d0*(zgb(i)+zgb(i+1)),ksep(npc+i)
+main.f:     #                  nsep,nsepo,ksep,phg,phgs2,phin)
+main.f:     #                  nsep,nsepo,ksep,phg,phgs2,phin)
+main.f:          write(72,*) ycn(i),zcn(i),ksep(i)
+main.f:          write(82,*) ycn(i),zcn(i),ksep(i)
+main.f:     #           xj,ze,xis,zes,jt,ksep,kse)
+nortan.f:            if(ksep(ip).eq.2)then
+nortan.f:            if(ksep(npc+ip).eq.2)then
+ridis4.f:     #                  nsep,nsepo,ksep,phg,phgs2,phin)
+ridis4.f:      dimension tg(npamx),tgb(npamx),ksep(npamx) 
+ridis4.f:c          if(ksep(jjj).eq.1)then
+ridis4.f:c        write(77,'(2d15.7,2i4)'), y,z,ip,ksep(ip)
+ridis4.f:c         write(77,'(2d15.7,2i4)'), yn(nn+i),zn(nn+i),nn+i,ksep(nn+i)
+ridis4.f:c        if(nsepo.eq.1) ksep(nn+ng)=0
+ridis4.f:       if(ksep(i).eq.0)then
+ridis4.f:          if(ksep(i-1).eq.0)then
+ridis4.f:            ksep(i) = 2
+ridis4.f:            ksep(i) = 1
+ridis4.f:          ksep(i) = 0
+solv22.f:     #           mb,mf,mt,m,n,nt,ntt,xi,ze,xis,zes,jt,ksep,kse)
+solv22.f:      dimension ksep(npamx),kse(npamx) 
+solv22.f:          kse(i)  = ksep(i)
+solv22.f:          kse(mt+i-mb)  = ksep(i)
+solv22.f:          kse(nt+i-(mb+m))  = ksep(i) 
+splver2.f:     #                phin,ksep)
+splver2.f:      dimension phin(npamx),ksep(npamx)
+splver2.f:        if(ksep(ipt).eq.1) noint=1 
+splver2.f:            if(ksep(i).eq.1)then
