@@ -1,0 +1,297 @@
+2d1
+< 
+5,8c4,6
+< c     +  Fully-nonlinear BEM solver for the water entry   +
+< c     +    of a 2D/Axisymmetric, QUASI-arbitrary shaped   +
+< c     +                      body                         +
+< c     +       It also has some 2D+t capabilities          +
+---
+> c     +  programma di calcolo del flusso generato dalla   +
+> c     +    caduta di un wedge avente un deadrise angle    +
+> c     +               pari ad alfa (gradi)                +
+12c10
+< c     - Include files:
+---
+> c     - File inclusi: 
+14,17c12,14
+< c       -- "slam_p.h" contains the definition of reals and the parameters 
+< c                     used throughout the code
+< c       -- "slam_f.h" contains the definition of the main variables and
+< c                     the parameters used throughout the code
+---
+> c       -- "slam_p.h" in cui sono riportati la definizione 
+> c                     delle variabili e i parametri per il 
+> c                     dimensionamento,
+21,156d17
+< 
+< c     yv,zv; yn,zn: coordinates of the panels vertices along the solid
+< c                   body contour  at the two Runge-Kutta levels
+< 
+< c     ysl,zsl,ynsl,znsl: coordinates of vertices of the free-surface
+< c                   panels at the two Runge-Kutta levels
+< 
+< c     yce,zce; ycn,zcn: centroids of the panels lying on the body
+< c                   contour at the two Runge-Kutta levels
+< 
+< c     ycesl,zcesl,ycnsl,zcnsl: centroids of the free-surface
+< c                   panels at the two Runge-Kutta levels
+< 
+< c     phi,dphi: velocity potential and normal derivative on the body
+< c               panels
+< 
+< c     phisl,dphisl: velocity potential and normal derivative on the
+< c               free-surface panels
+< 
+< c     phinsl: free-surface velocity potential at the second R-K level
+< 
+< c     phin: velocity potential in the jet region at the second R-K level
+< 
+< c     ygb,zgb: coordinates of shallow water vertices lying on the body
+< 
+< c     dpht,dphtsl: tangential derivative of the velocity potential on
+< c                  body and free-surface, respectively
+< 
+< c     tmy,tmz: unit tangent vector on the body surface
+< c     tmysl,tmzsl: unit tangent vector on free-surface panels
+< 
+< c     rny,rnz: unit normal vector on the body surface
+< c     rnysl,rnzsl: unit normal vector on free-surface panels
+< 
+< c     amp,ampsl: panel length on body (amp) and free surface (ampsl)
+<  
+< c     vym1,vzm1,vym2,vzm2: velocity components on the body at the two
+< c                          RK levels
+< c     vym1sl,vzm1sl,vym2sl,vzm2sl: velocity components at free surface
+< c                          at the two RK levels 
+< 
+< c     depn1,depn2: time derivative of the velocity potential on the free
+< c                  surface at the two RK levels
+< 
+< c     depn1s,depn2s: time derivative of the velocity potential in the
+< c                  jet region at the two RK levels
+< 
+< c     dpt,dpnt: tangential derivative of the tangential (dpt) and normal 
+< c               (dpnt) velocity on the body and jet region
+< 
+< c     dptsl,dpntsl: tangential derivative of the tangential (dpt) and normal 
+< c               (dpnt) velocity on the free surface
+< 
+< c     yco,zco: centroids coordinates at the previous step used in prefin
+< c            to compute \partial phi/\partial t by finite differences
+< c     vyo,vzo,phio: velocity and potential at the previous step used in 
+< c            prefin to compute \partial phi/\partial t by finite differences
+< 
+< c     rl: matching factor in the matching region
+< c     a1,b1,c1,d1,e1: coefficients of the FEM model in the modelled
+< c                region of the jet
+< 
+< c     a2,b2,c2,d2,e2: as before but for the time derivative of the
+< c                velocity potential (pressure solution)
+< 
+< c     xig, zeb,zef: coordinates (in local frame of reference) of the 
+< c               vertices of the modelled part of the jet. The xig (or
+< c               \xi) coordinate is the same for the two vertices located 
+< c               along the edge orthogonal to the free surface, whereaz 
+< c               zeb is the \zeta coordinate of the vertex on the body 
+< c               countour (and it is zero) and zef is the coordinate at the 
+< c               free surface
+< 
+< c     xigs, zegs: as above but they are the coordinate of the midpoint
+< c               of the jet element
+< 
+< c     xigs,zegs,xigb,zegb,xigf,zegf: coordinates of the vertices of the
+< c               jet element in the Glabal frame of reference
+< 
+< c     ty,tz,ry,rz: component of the tangent and normal unit vectors in
+< c               the modelled jet region
+< 
+< c     ygn,zgn: body geometry (yg,zg) translated vertically
+< 
+< c     tn: is the curvilinear abscissa associated with ygn and zgn
+< 
+< c     ygs2,zgs2: second derivatives needed for the spline reconstruction
+< c              of the body contour
+< 
+< c     tg: curvilinear abscissa along the body (defined on the basis of
+< c          yg,zg) which is used in the spline interpolation
+< 
+< c     tgb: curvilinear abscissa used on the jet surfaces (both on the
+< c          body contour and on the free surface side)
+< 
+< c     kse, ksep: indices related which identifies the elements in the
+< c          jet region which are detached (separated) from the body contour
+< 
+< c     tcb,ycb,zcb: curvilinear abscissa and coordinates of the centroids
+< c          of the elements in the modelled part of the jet lying along the 
+< c          body contour
+< 
+< c     tc: same as tcb but at a different RK level
+< 
+< c ---------------------- to be better understood
+< 
+< c     dpt2, dpht2: terms used to compute the pressure in different ways
+< c     pre,pre2,pres: pressure computed using different methods but
+< c              the differences have to be better understood
+< 
+< c     dphtbsl,dphn,dphnb,phb,ph: these arrays are used in an overlapping
+< c            region between the bulk of the fluid and the modelled part of 
+< c            the jet in order to smooth the transition between the two regions
+< c            They have to be further understood but it seems they are
+< c            only used inside solv22 and solv22p
+< 
+< c     hp,xj,ze,xis,zes: these variables seems still related to the jet
+< c               modelling but not all of them are used at present. Better 
+< c               keep them in the debugging phase
+< 
+< c     dpttsl,dpb,dptb,dpntbsl: these variables are used in solv22p and
+< c            seems to be related to the solution of the Laplace equation 
+< c            for the time derivative of the velocity potential but their 
+< c            use isn't clear
+< 
+< c     vxi,dpntt: vxi is the tangential velocity in the jet and dpntt is
+< c            the second derivative of the velocity potential. They seem
+< c            to be used for the pressure
+< 
+< c     kord, kor: are indices used in the modelled part of the jet and/or
+< c     in the transition region, but it is not clear how they work
+< 
+< c ----------------------
+< 
+<       character*2 scon,svel,spre,spot
+<        
+159,162c20
+<       dimension yce(npamx),zce(npamx),ycn(npamx),zcn(npamx)
+<       dimension ycsl(npamx),zcsl(npamx),ycnsl(npamx),zcnsl(npamx)
+<       dimension phi(npamx),phisl(npamx),phinsl(npamx),phin(npamx)
+<       dimension dphi(npamx),dphisl(npamx)
+---
+
+
+
+
+>       dimension phi(npamx),phisl(npamx),phinsl(npamx)
+163a22,25
+>       dimension dddphit(-npamx:npamx),ddphit(-npamx:npamx)
+>       dimension xi(-npamx:npamx),xin(-npamx:npamx)
+>       dimension h(-npamx:npamx),dh(-npamx:npamx),hh(-npamx:npamx)
+>       dimension dphi(npamx),dphisl(npamx)
+164a27,28
+>       dimension yce(npamx),zce(npamx),ycn(npamx),zcn(npamx)
+>       dimension ycsl(npamx),zcsl(npamx),ycnsl(npamx),zcnsl(npamx)
+170,171c34,35
+<       dimension depn1(npamx),depn2(npamx)
+<       dimension depn1s(npamx),depn2s(npamx)
+---
+>       dimension depn1(npamx),depn2(npamx),zcr(npamx)
+>       dimension pre(npamx)
+173,174c37,38
+< 
+<       dimension yco(npamx),zco(npamx)
+---
+>       dimension dpht2(npamx)
+>       dimension pres(npamx),yco(npamx),zco(npamx)
+176c40,42
+<       dimension rl(npamx) 
+---
+>       dimension dphtbsl(npamx),phb(npamx),ph(npamx),dphn(npamx)
+>       dimension dphnb(npamx) 
+>       dimension phib(npamx),dphibsl(npamx),rl(npamx) 
+179a46,50
+>       dimension hp(npamx),xj(npamx),ze(npamx),xis(npamx),zes(npamx)
+>       dimension dpttsl(npamx),dpb(npamx),dptb(npamx),dpntbsl(npamx)
+>       dimension a2(npamx),b2(npamx),c2(npamx),d2(npamx),e2(npamx)
+>       dimension pre2(npamx),dpt2(npamx)
+>       dimension vxi(npamx),dpntt(npamx)
+182d52
+<       dimension a2(npamx),b2(npamx),c2(npamx),d2(npamx),e2(npamx)
+184c54
+<       dimension ygn(npamx),zgn(npamx),ygs2(npamx),zgs2(npamx),tn(npamx)
+---
+>       dimension ygn(npamx),zgn(npamx),ygs2(npamx),zgs2(npamx)
+185a56,57
+>       dimension phin(npamx),phg(npamx),phgs2(npamx)
+>       dimension depn1s(npamx),depn2s(npamx)
+187,199c59
+< 
+< c----------------- to be better understood
+<       dimension dpt2(npamx),dpht2(npamx)
+<       dimension pre(npamx),pre2(npamx),pres(npamx)
+<       dimension dphtbsl(npamx),dphn(npamx),dphnb(npamx)
+<       dimension phb(npamx),ph(npamx)
+<       dimension hp(npamx),xj(npamx),ze(npamx),xis(npamx),zes(npamx)
+<       dimension dpttsl(npamx),dpb(npamx),dptb(npamx),dpntbsl(npamx)
+<       dimension vxi(npamx),dpntt(npamx)
+<       dimension kord(npamx),kor(npamx)
+< 
+< c-----------------
+< 
+---
+>       dimension kord(npamx),kor(npamx),tn(npamx)
+355c215
+<      #               ampli,ngo1,nsep,nsepo,ycn,zcn,npc,
+---
+>      #               ampli,ngo1,nsep,nsepo,ycn,zcn,npc,phg,phgs2,
+388a249
+>            write(*,*) ' AAAA - NG input ',ng
+392c253
+<      #                  nsep,nsepo,ksep,phin,
+---
+>      #                  nsep,nsepo,ksep,phg,phgs2,phin,
+404d264
+<             write(*,*) ' AAA Chiamo get 1 '
+456d315
+<             write(*,*) 'AAA chiamo solv22 - 1'
+496c355
+<      #               ampli,ngo1,nsep,nsepo,ycn,zcn,npc,
+---
+>      #               ampli,ngo1,nsep,nsepo,ycn,zcn,npc,phg,phgs2,
+607a467
+>            write(*,*) ' BBBB - NG input ',ng
+611c471
+<      #                  nsep,nsepo,ksep,phin,
+---
+>      #                  nsep,nsepo,ksep,phg,phgs2,phin,
+616a477
+>            write(*,*) ' CCCC - NG input ',ng
+620c481
+<      #                  nsep,nsepo,ksep,phin,
+---
+>      #                  nsep,nsepo,ksep,phg,phgs2,phin,
+674d534
+<             write(*,*) ' AAA Chiamo get 2 '
+702c562,568
+<             write(*,*) 'AAA chiamo solv22 - 2'
+---
+> c          call solv2(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+> c     #           ycsl,zcsl,dphi,phisl,dphtsl,dphtbsl,phb,
+> c     #           xigs,zegs,xigb,zegb,xigf,zegf,
+> c     #           ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+> c     #           ph,dphn,dphnb,a1,b1,c1,d1,e1,
+> c     #           phi,phib,dphisl,dphibsl,rl,mb,mf,mt,m,n,nt,ntt,
+> c     #           xj,ze,xis,zes,jt)
+774,780d639
+< 
+< * !! dphtu is the tangential velocity at the apex. 
+< * !! ATTENZIONE: la variabile 'san" non è inizializzata. Deve essere
+< * l'angolo limite all'apice del corpo. Definirlo nella routine initial
+< * (o in ridis se si vuole variarlo nel tempo) in base alla geometria
+< 
+<       write(*,*) ' ATTENZIONE - SISTEMARE variabile san !!!'
+824,825c683,696
+<         write(*,*) ' ATTENZIONE: controllare dpttsl,dpttsl nella
+<      #              chiamata alla SOLV22p   !!!!! '
+---
+> c          call solv2(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+> c     #           ycsl,zcsl,dphi,phisl,dphtsl,dphtbsl,phb,
+> c     #           xigs,zegs,xigb,zegb,xigf,zegf,
+> c     #           ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+> c     #           ph,dphn,dphnb,a1,b1,c1,d1,e1,
+> c     #           phi,phib,dphisl,dphibsl,rl,mb,mf,mt,m,n,nt,ntt,
+> c     #           xj,ze,xis,zes,jt)
+> c        call solv2p(frint,ng,npc,npsl,yce,zce,yv,zv,ysl,zsl,
+> c     #              ycsl,zcsl,dpnt,dptsl,dpttsl,dpttsl,dpb,
+> c     #              xigs,zegs,xigb,zegb,xigf,zegf,
+> c     #              ty,tz,ry,rz,tmy,tmz,rny,rnz,tmysl,tmzsl,rnysl,rnzsl,
+> c     #              ph,dphn,dphnb,a2,b2,c2,d2,e2,dpt,dptb,
+> c     #              dpntsl,dpntbsl,rl,mb,mf,mt,m,n,nt,ntt,xj,ze,xis,
+> c     #              zes,jt)
