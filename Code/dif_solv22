@@ -1,8 +1,0 @@
-8c8
-<      #           ph,dphn,dphnb,a,b,c,d,e,phi,rl,    
----
->      #           ph,dphn,dphnb,a,b,c,d,e,phi,phib,dphisl,dphibsl,rl,    
-24c24
-<       dimension aa(npamx,npamx),bb(npamx)
----
->       dimension aa(npamx,npamx),bb(npamx),appo(npamx)

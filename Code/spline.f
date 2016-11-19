@@ -3,12 +3,21 @@ c     ======================================================
 
       subroutine spline(xs,zs,xs2,zs2,tp,yp1,ypn,n,nmax)
 
-      include"slam_p.h"
+      implicit none
 
-      dimension xs(nmax),zs(nmax),xs2(nmax),zs2(nmax),tp(nmax)
-      dimension x(npamx+1),y(npamx+1),y2(npamx+1),u(npamx+1)
+      integer n,nmax
 
-c     - interpolazione componente xs
+      real*8 xs(nmax),zs(nmax),xs2(nmax),zs2(nmax),tp(nmax)
+
+c     Local variables
+
+      integer iv,i,k
+      real*8 yp1,ypn,p,sig,qn,un
+      real*8 u(nmax),x(nmax),y(nmax),y2(nmax)
+
+c     First executable statement
+
+c     - interpolation of xs
 
       do iv = 1,n
         x(iv) = tp(iv)
@@ -43,7 +52,7 @@ c     - interpolazione componente xs
         xs2(iv) = y2(iv)
       enddo
 
-c     - interpolazione componente zs
+c     - interpolation of zs
 
       do iv = 1,n
         x(iv) = tp(iv)

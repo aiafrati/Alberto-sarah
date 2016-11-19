@@ -1,0 +1,76 @@
+Sul branch master
+Your branch is up-to-date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   Code/Makefile
+	new file:   Code/aa
+	new file:   Code/bcpre.f
+	new file:   Code/calsol.f
+	new file:   Code/calsolp.f
+	new file:   Code/calvel.f
+	new file:   Code/cc
+	new file:   Code/cc_main
+	new file:   Code/ccc
+	new file:   Code/check.f
+	new file:   Code/cicci
+	new file:   Code/ciccio_main
+	new file:   Code/cocci
+	new file:   Code/delta.f
+	new file:   Code/dif_main
+	new file:   Code/dif_ridis
+	new file:   Code/dif_solv22
+	new file:   Code/distri.f
+	new file:   Code/disun2.f
+	new file:   Code/doldfil1.f
+	new file:   Code/filiniz.f
+	new file:   Code/finte.f
+	new file:   Code/get.f
+	new file:   Code/initial.f
+	new file:   Code/input.f
+	new file:   Code/intret.f
+	new file:   Code/main.f
+	new file:   Code/nortan.f
+	new file:   Code/poli3.f
+	new file:   Code/prefin.f
+	new file:   Code/ridis5.f
+	new file:   Code/ropn.f
+	new file:   Code/shallo.f
+	new file:   Code/slam_f.h
+	new file:   Code/slam_p.h
+	new file:   Code/slam_v.h
+	new file:   Code/solv1.f
+	new file:   Code/solv22.f
+	new file:   Code/solv22p.f
+	new file:   Code/spl
+	new file:   Code/spline.f
+	new file:   Code/spline1.f
+	new file:   Code/spline3.f
+	new file:   Code/splint.f
+	new file:   Code/splint1.f
+	new file:   Code/splint3.f
+	new file:   Code/splont.f
+	new file:   Code/splver2.f
+	new file:   Code/stampa.f
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	deleted:    Code/aa
+	deleted:    Code/cc
+	deleted:    Code/cc_main
+	deleted:    Code/ccc
+	deleted:    Code/cicci
+	deleted:    Code/ciccio_main
+	deleted:    Code/cocci
+	deleted:    Code/spl
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	.gitignore
+	code.tar.gz
+	stato_git
+

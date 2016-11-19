@@ -1,13 +1,14 @@
 
 c     +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-      subroutine filiniz ()
+      subroutine filiniz (nfil,c,d)
 
 c     - Inizializza i coefficienti del filtro di Dold
 
-      include 'slam_p.h'
-c     include 'slam_v.h'
-      include 'slam_f.h'
+      implicit none
+
+      integer  nfil
+      real*8   c(1:nfil,0:nfil),d(1:nfil)
 
       real*8 a(1:7,0:7)
       data a(1,0),a(1,1),a(1,2),a(1,3),a(1,4),a(1,5),a(1,6),a(1,7)
@@ -31,12 +32,12 @@ c     include 'slam_v.h'
 
       integer*4 i,j
 
-      do i=1,7
-         d(i) = 2.d0**e(i)
-         do j=0,7
-            c(i,j) = a(i,j)
-         end do
-      end do
+      do i=1,nfil
+        d(i) = 2.d0**e(i)
+        do j=0,nfil
+          c(i,j) = a(i,j)
+        enddo
+      enddo
 
       return
       end

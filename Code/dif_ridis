@@ -1,8 +1,0 @@
-7c7
-<      #                  nsep,nsepo,ksep,phin,
----
->      #                  nsep,nsepo,ksep,phg,phgs2,phin,
-17c17
-<       dimension phin(npamx)
----
->       dimension phg(npamx),phgs2(npamx),phin(npamx)
